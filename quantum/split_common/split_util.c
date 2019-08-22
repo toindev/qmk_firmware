@@ -35,22 +35,11 @@ bool is_keyboard_left(void) {
 __attribute__((weak))
 bool is_keyboard_master(void)
 {
-#ifdef __AVR__
-  static enum { UNKNOWN, MASTER, SLAVE } usbstate = UNKNOWN;
-
-  // only check once, as this is called often
-  if (usbstate == UNKNOWN)
-  {
-    USBCON |= (1 << OTGPADE);  // enables VBUS pad
-    wait_us(5);
-
-    usbstate = (USBSTA & (1 << VBUS)) ? MASTER : SLAVE;  // checks state of VBUS
-  }
-
-  return (usbstate == MASTER);
-#else
-  return true;
-#endif
+ #if defined(HARDCODED_MASTER)
+   return true;
+ #else
+   return false;
+ #endif
 }
 
 static void keyboard_master_setup(void) {
